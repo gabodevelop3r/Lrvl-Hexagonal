@@ -1,61 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🔐 Guía de Configuración de Variables de Entorno
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este proyecto utiliza un archivo `.env` para manejar credenciales y configuraciones sensibles.  
+Sigue los pasos a continuación para generar las claves necesarias y asegurar que tu entorno funcione correctamente.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Configuración paso a paso
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1️⃣ Crear el archivo `.env`
+Copia el archivo de ejemplo incluido en el repositorio y renómbralo:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+cp .env.example .env
+```
 
-## Learning Laravel
+Luego abre el archivo `.env` y completa los valores según esta guía.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 2️⃣ Generar las claves necesarias
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### 🔹 API_KEY
+Clave única utilizada para autenticar solicitudes internas o servicios externos.  
+Debe ser una cadena tipo UUID (identificador único universal).
 
-## Laravel Sponsors
+**Comandos para generarla:**
+```bash
+# Opción 1 (Linux / macOS)
+uuidgen
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Opción 2 (PHP)
+php -r "echo uuid_create(UUID_TYPE_RANDOM);"
+```
 
-### Premium Partners
+**Ejemplo:**
+```
+API_KEY=3f82dee6-c96b-4e20-a80e-50f2f21887e1
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+#### 🔹 APP_VERSION
+Define la versión actual de la API.  
+Se utiliza normalmente para versionar endpoints o despliegues.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Ejemplo:**
+```
+APP_VERSION=v1
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### 🔹 JWT_KEY
+Clave secreta utilizada para **firmar y verificar los tokens JWT**.  
+Debe ser **larga, segura y privada**.  
+⚠️ **Nunca compartas ni subas esta clave al repositorio.**
 
-## Security Vulnerabilities
+**Comandos para generarla:**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+# Opción 1 (recomendada) - OpenSSL
+openssl rand -hex 32
 
-## License
+# Opción 2 - PHP
+php -r "echo bin2hex(random_bytes(32));"
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
+
+**Ejemplo:**
+```
+JWT_KEY=14768d4e7ae04715a3b9f9f0c5ba5ef5c9d5f7b8d2d1e0f6a8c3d2b1a7e4c6f2
+```
+
+> 💡 Recomendación: genera una clave distinta para cada entorno (`.env.local`, `.env.staging`, `.env.production`).
+
+---
+
+#### 🔹 JWT_ENCRYPT
+Algoritmo utilizado para firmar el token JWT.  
+Debe coincidir exactamente con el configurado en tu backend.
+
+**Algoritmos comunes:**
+- `HS256` → SHA-256 (rápido y seguro, recomendado)
+- `HS384` → SHA-384
+- `HS512` → SHA-512 (más seguro, más pesado)
+
+**Ejemplo:**
+```
+JWT_ENCRYPT=HS256
+```
+
+---
+
+### 3️⃣ Verificar tu configuración JWT (opcional)
+
+Puedes probar tu configuración usando [https://jwt.io](https://jwt.io):
+
+1. Abre el sitio y selecciona el algoritmo que definiste en `JWT_ENCRYPT`.  
+2. En el **payload**, escribe algo como:
+   ```json
+   {
+     "sub": 1,
+     "name": "Test User",
+     "iat": 1730400000
+   }
+   ```
+3. En **VERIFY SIGNATURE**, pega tu `JWT_KEY`.  
+4. Verifica que el token se valide correctamente.
+
+---
+
+
+### 5️⃣ Resumen rápido de generación
+
+| Variable        | Comando recomendado                                | Ejemplo de valor |
+|------------------|----------------------------------------------------|------------------|
+| **API_KEY**      | `uuidgen`                                          | `3f82dee6-c96b-4e20-a80e-50f2f21887e1` |
+| **JWT_KEY**      | `openssl rand -hex 32`                             | `14768d4e7ae04715a3b9f9f0c5ba5ef5c9d5f7b8d2d1e0f6a8c3d2b1a7e4c6f2` |
+| **JWT_ENCRYPT**  | (definido manualmente)                             | `HS256` |
+| **APP_VERSION**  | (definido manualmente)                             | `v1` |
+
+---
+
+📘 Con estos pasos tendrás tu entorno seguro, documentado y funcionando correctamente.
