@@ -2,7 +2,16 @@
 
 namespace Src\Shared\Domain\ValueObjects;
 
-class StringValueObject
+abstract class StringValueObject
 {
+    public function __construct(private string $value)
+    {
+
+    }
+
+    public function value(): string
+    {
+        return $this->value;
+    }
 
 }
