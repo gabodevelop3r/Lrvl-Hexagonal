@@ -6,8 +6,12 @@ use Src\Shared\Infrastructure\Exceptions\HandlerException;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Src\Shared\Infrastructure\Middleware\{ApiMiddleware,AuthMiddleware, RoleMiddleware};
+
 use Src\Management\Login\Infrastructure\Services\RouteServiceProvider as LoginRouteServiceProvider;
 use Src\Management\Login\Infrastructure\Services\DependencyServiceProvider as LoginDependencyServiceProvider;
+
+use Src\Management\Forgot\Infrastructure\Services\RouteServiceProvider as ForgotRouteServiceProvider;
+use Src\Management\Forgot\Infrastructure\Services\DependencyServiceProvider as ForgotDependencyServiceProvider;
 
 use Src\Application\User\Infrastructure\Services\RouteServiceProvider as UserRouteServiceProvider;
 use Src\Application\User\Infrastructure\Services\DependencyServiceProvider as UserDependencyServiceProvider;
@@ -36,6 +40,9 @@ $app->singleton(ExceptionHandler::class, HandlerException::class);
 
 $app->register(LoginRouteServiceProvider::class);
 $app->register(LoginDependencyServiceProvider::class);
+
+$app->register(ForgotDependencyServiceProvider::class);
+$app->register(ForgotRouteServiceProvider::class);
 
 $app->register(UserRouteServiceProvider::class);
 $app->register(UserDependencyServiceProvider::class);

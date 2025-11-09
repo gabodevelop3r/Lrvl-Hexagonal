@@ -20,4 +20,9 @@ trait HttpCodesDomainHelper
         return 401;
     }
 
+    public function internalError()
+    {
+        return 500;
+    }
+
 }
